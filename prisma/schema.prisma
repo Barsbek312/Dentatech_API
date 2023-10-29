@@ -10,33 +10,243 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model User {
+model District {
   id Int @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  district String
 
-  email String @unique
-  hash String
+  patients Patient[]
 
-  firstName String?
-  lastName String?
-
-  bookmarks Bookmark[]
-  @@map("users")
 }
 
-model Bookmark {
+model StatusSchedule {
   id Int @id @default(autoincrement())
+  status String
+
+  schedule Schedule[]
+}
+
+model Clinic {
+  id Int @id @default(autoincrement())
+  clinic String
+
+  branches Branch[]
+}
+
+model Position {
+  id Int @id @default(autoincrement())
+  position String
+
+  staff Staff[]
+
+}
+
+model StatusTreatment {
+  id Int @id @default(autoincrement())
+  status String
+
+  treatment Treatment[]
+
+}
+
+model TypeWork {
+  id Int @id @default(autoincrement())
+  type String
+
+  works Work[]
+
+}
+
+model Disease {
+  id Int @id @default(autoincrement())
+
+  disease String
+  diagnosis Diagnosis[]
+}
+
+model Jaw {
+  id Int @id @default(autoincrement())
+  jaw String
+
+  rowJaws RowJaw[]
+}
+
+model RowJaw {
+  id Int @id @default(autoincrement())
+  row Int
+
+  teeth Teeth[]
+
+  jawId Int 
+  jaw Jaw @relation(fields: [jawId], references: [id])
+
+}
+
+model Patient {
+  id Int @id @default(autoincrement())
+  name String 
+  surname String
+  Age Int?
+  phone String? 
+  email String?
+
+  schedule Schedule[]
+  allergy Allergy[]
+  diagnosis Diagnosis[]
+  photo Photo[]
+
+  districtId Int
+  district District @relation(fields: [districtId], references: [id])
+}
+
+model Branch {
+  id Int @id @default(autoincrement())
+  branch String 
+  
+  staff Staff[]
+
+  clinicId Int 
+  clinic Clinic @relation(fields: [clinicId], references: [id])
+
+}
+
+model Work {
+  id Int @id @default(autoincrement())
+  work String
+
+  descriptionOfWork String?
+
+  workPrice WorkPrice[]
+  treatMentWork TreatmentWork[]
+
+  typeWorkId Int 
+  typeWork TypeWork @relation(fields: [typeWorkId], references: [id])
+}
+
+model Staff {
+  id Int @id @default(autoincrement())
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  name String 
+  surname String
+  phone String
+  gender Boolean
+  // Если мужик - true, женщина false
+  email String @unique
+  hash String 
+
+  schedule Schedule[]
+  diagnosis Diagnosis[]
+
+  branchId Int
+  branch Branch @relation(fields: [branchId], references: [id])
+
+  positionId Int
+  position Position @relation(fields: [positionId], references: [id])
+
+}
+
+model WorkPrice {
+  id Int @id @default(autoincrement())
+
+  title String 
+  price Int
+
+  workId Int
+  work Work @relation(fields: [workId], references: [id])
+
+}
+
+model Teeth {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  diagnosis Diagnosis[]
+
+  rowJawId Int 
+  rowJaw RowJaw @relation(fields: [rowJawId], references: [id])
+}
+
+
+model Photo {
+  id Int @id @default(autoincrement())
+
+  pictureURL String
+
+  patientId Int
+  patient Patient @relation(fields: [patientId], references: [id])
+}
+
+model Allergy {
+  id Int @id @default(autoincrement())
+  title String
+
+  patientId Int
+  patient Patient @relation(fields: [patientId], references: [id])
+}
+
+model Schedule {
+  id Int @id @default(autoincrement())
 
   title String
+  start String 
+  end String 
   description String?
-  link String
 
-  userId Int
-  user User @relation(fields: [userId], references: [id])
+  patientId Int
+  patient Patient @relation(fields: [patientId], references: [id])
 
-  @@map("bookmarks")
+  statusId Int
+  status StatusSchedule @relation(fields: [statusId], references: [id])
+
+  staffId Int
+  staff Staff @relation(fields: [staffId], references: [id])
 }
+
+model Diagnosis {
+  id Int @id @default(autoincrement())
+
+  treatment Treatment[]
+
+  diseaseId Int
+  disease Disease @relation(fields: [diseaseId], references: [id])
+
+  teethId Int
+  teeth Teeth @relation(fields: [teethId], references: [id])
+
+  patientId Int
+  patent Patient @relation(fields: [patientId], references: [id])
+
+  staffId Int
+  staff Staff @relation(fields: [staffId], references: [id])
+}
+
+model Treatment {
+  id Int @id @default(autoincrement())
+
+  name String
+
+  treatmentWork TreatmentWork[]
+
+  diagnosisId Int
+  diagnosis Diagnosis @relation(fields: [diagnosisId], references: [id])
+
+  statusId Int 
+  status StatusTreatment @relation(fields: [statusId], references: [id])
+}
+
+model TreatmentWork {
+  id Int @id @default(autoincrement())
+
+  workId Int
+  work Work @relation(fields: [workId], references: [id])
+
+  treatmentId Int
+  treatment Treatment @relation(fields: [treatmentId], references: [id])
+}
+
+
+
+
+
