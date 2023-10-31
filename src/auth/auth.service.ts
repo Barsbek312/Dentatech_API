@@ -21,6 +21,7 @@ export class AuthService {
         private readonly mailerService: MailerService) {}
 
         async sendVerificationEmail(email: string, token: string) {
+            console.log(email, token)
             const url = `http://yourfrontendurl.com/verify-email?token=${token}`;
         
             await this.mailerService.sendMail({
@@ -69,6 +70,7 @@ export class AuthService {
             const tokenExpirationDate = new Date();
             tokenExpirationDate.setHours(tokenExpirationDate.getHours() + 24); // Устанавливаем срок действия токена на 24 часа
 
+            console.log(verificationToken, tokenExpirationDate)
             await this.prisma.staff.update({
             where: { email: dto.email },
             data: {
