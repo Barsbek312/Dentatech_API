@@ -7,6 +7,9 @@ import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { ClinicService } from "src/clinic/clinic.service";
 import { BranchService } from "src/branch/branch.service";
+import { randomBytes } from "crypto";
+import { MailerService } from "@nestjs-modules/mailer";
+
 
 @Injectable()
 export class AuthService {
@@ -14,7 +17,29 @@ export class AuthService {
         private jwt: JwtService, 
         private config: ConfigService,
         private clinic: ClinicService,
-        private branch: BranchService) {}
+        private branch: BranchService,
+        private readonly mailerService: MailerService) {}
+
+        async sendVerificationEmail(email: string, token: string) {
+            const url = `http://yourfrontendurl.com/verify-email?token=${token}`;
+        
+            await this.mailerService.sendMail({
+              to: email,
+              subject: 'Подтверждение регистрации на платформе Dentatech',
+              text: `Здравствуйте!
+
+              Благодарим вас за регистрацию на платформе Dentatech. Мы рады приветствовать вас в нашем сообществе!
+              
+              Для завершения регистрации и активации вашего аккаунта, пожалуйста, подтвердите свою электронную почту, перейдя по следующей ссылке: ${url}
+              
+              Если вы не регистрировались на платформе Dentatech, проигнорируйте это письмо.
+              
+              С уважением, команда Dentatech`,
+              context: {
+                url: url
+              },
+            });
+        }
     
     async signup(dto: RegistrationDto) {
         // generate the password hash
@@ -31,13 +56,28 @@ export class AuthService {
                     name: dto.name,
                     surname: dto.surname,
                     phone: dto.phone,
-                    gender: dto.gender,
+                    isMale: dto.isMale,
                     email: dto.email,
                     branchId,
                     positionId: dto.positionId, 
                     hash,
                 }
             })
+
+            const verificationToken = this.generateVerificationToken();
+            
+            const tokenExpirationDate = new Date();
+            tokenExpirationDate.setHours(tokenExpirationDate.getHours() + 24); // Устанавливаем срок действия токена на 24 часа
+
+            await this.prisma.staff.update({
+            where: { email: dto.email },
+            data: {
+                emailVerificationToken: verificationToken,
+                tokenExpirationDate: tokenExpirationDate
+            }
+            });
+
+            await this.sendVerificationEmail(dto.email, verificationToken);
     
             return this.signToken(user.id, user.email);
 
@@ -93,4 +133,36 @@ export class AuthService {
             access_token: token,
         }
     }
+
+    generateVerificationToken(): string {
+        return randomBytes(32).toString('hex');
+    }
+
+    async verifyEmail(token: string) {
+        const user = await this.prisma.staff.findUnique({
+            where: {
+                emailVerificationToken: token
+            }
+        });
+    
+        if (!user || new Date() > user.tokenExpirationDate) {
+            throw new ForbiddenException("Token is invalid or has expired.");
+        }
+    
+        await this.prisma.staff.update({
+            where: {
+                id: user.id
+            },
+            data: {
+                isEmailVerified: true,
+                emailVerificationToken: null,
+                tokenExpirationDate: null
+            }
+        });
+    
+        return { message: "Email verified successfully." };
+    }
+    
+    
+
 }

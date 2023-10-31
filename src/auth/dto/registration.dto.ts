@@ -20,7 +20,7 @@ export class RegistrationDto {
     phone: string;
 
     @IsNotEmpty()
-    gender: boolean;
+    isMale: boolean;
 
     @IsNotEmpty()
     clinic: string;
