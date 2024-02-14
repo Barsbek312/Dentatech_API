@@ -5,6 +5,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClinicModule } from './clinic/clinic.module';
 import { BranchModule } from './branch/branch.module';
+import { ScheduleModule } from './schedule/schedule.module';
+import { PatientModule } from './patient/patient.module';
 
 @Module({
   imports: [
@@ -16,7 +18,10 @@ import { BranchModule } from './branch/branch.module';
     UserModule,
     PrismaModule,
     ClinicModule,
-    BranchModule,]
+    BranchModule,
+    ScheduleModule,
+    PatientModule,
+  ]
 })
 
 export class AppModule {}

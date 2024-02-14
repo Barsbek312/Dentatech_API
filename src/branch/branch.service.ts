@@ -16,7 +16,30 @@ export class BranchService {
 
             return branchObj.id;
         } catch(error) {
-            throw error
+            throw error;
+        }
+    }
+
+    async getBranches(branchId: string) {
+        try {
+            const branches = await this.prisma.branch.findMany({
+                where: {
+                    clinic: {
+                        id: parseInt(branchId)
+                    }
+                },
+            });
+
+            const clinic = await this.prisma.clinic.findFirst({
+                where: {
+                    id: branches[0]?.clinicId
+                }
+            })
+
+
+            return [...branches, {"myBranchId": branchId},  clinic];
+        } catch(error) {
+            throw error;
         }
     }
 }

@@ -13,21 +13,20 @@ import { MailerService } from "@nestjs-modules/mailer";
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService, 
-        private jwt: JwtService, 
+    constructor(private prisma: PrismaService,
+        private jwt: JwtService,
         private config: ConfigService,
         private clinic: ClinicService,
         private branch: BranchService,
-        private readonly mailerService: MailerService) {}
+        private readonly mailerService: MailerService) { }
 
-        async sendVerificationEmail(email: string, token: string) {
-            console.log(email, token)
-            const url = `http://yourfrontendurl.com/verify-email?token=${token}`;
-        
-            await this.mailerService.sendMail({
-              to: email,
-              subject: 'Подтверждение регистрации на платформе Dentatech',
-              text: `Здравствуйте!
+    async sendVerificationEmail(email: string, token: string) {
+        const url = `http://localhost:3000/verify-email?token=${token}?email=${email}`;
+
+        await this.mailerService.sendMail({
+            to: email,
+            subject: 'Подтверждение регистрации на платформе Dentatech',
+            text: `Здравствуйте!
 
               Благодарим вас за регистрацию на платформе Dentatech. Мы рады приветствовать вас в нашем сообществе!
               
@@ -36,12 +35,12 @@ export class AuthService {
               Если вы не регистрировались на платформе Dentatech, проигнорируйте это письмо.
               
               С уважением, команда Dentatech`,
-              context: {
+            context: {
                 url: url
-              },
-            });
-        }
-    
+            },
+        });
+    }
+
     async signup(dto: RegistrationDto) {
         // generate the password hash
         const hash = await argon.hash(dto.password);
@@ -60,32 +59,32 @@ export class AuthService {
                     isMale: dto.isMale,
                     email: dto.email,
                     branchId,
-                    positionId: dto.positionId, 
+                    positionId: dto.positionId,
+                    isAdmin: dto.isAdmin,
                     hash,
                 }
             })
 
             const verificationToken = this.generateVerificationToken();
-            
+
             const tokenExpirationDate = new Date();
             tokenExpirationDate.setHours(tokenExpirationDate.getHours() + 24); // Устанавливаем срок действия токена на 24 часа
 
-            console.log(verificationToken, tokenExpirationDate)
             await this.prisma.staff.update({
-            where: { email: dto.email },
-            data: {
-                emailVerificationToken: verificationToken,
-                tokenExpirationDate: tokenExpirationDate
-            }
+                where: { email: dto.email },
+                data: {
+                    emailVerificationToken: verificationToken,
+                    tokenExpirationDate: tokenExpirationDate
+                }
             });
 
             await this.sendVerificationEmail(dto.email, verificationToken);
-    
+
             return this.signToken(user.id, user.email);
 
-        } catch(error) {
-            if(error instanceof PrismaClientKnownRequestError) {
-                if(error.code === "P2002") {
+        } catch (error) {
+            if (error instanceof PrismaClientKnownRequestError) {
+                if (error.code === "P2002") {
                     throw new ForbiddenException(
                         'Credentials taken',
                     )
@@ -96,7 +95,6 @@ export class AuthService {
     }
 
     async signin(dto: LoginDto) {
-
         // find the user by email
         const user = await this.prisma.staff.findUnique({
             where: {
@@ -105,20 +103,27 @@ export class AuthService {
         })
 
         // if user does not exist throw exception
-        if(!user) throw new ForbiddenException("Credentials incorrect")
+        if (!user) throw new ForbiddenException("Credentials incorrect")
+
+        // Check if the email is verified
+        if (!user.isEmailVerified) {
+            throw new ForbiddenException("Email is not verified");
+        }
 
         // compare password
         const pwMathces = await argon.verify(user.hash, dto.password)
 
         // if password incorrect throw exception
-        if(!pwMathces) 
+        if (!pwMathces)
             throw new ForbiddenException("Credentials incorrect")
 
         // send back the user
         return this.signToken(user.id, user.email);
     }
 
-    async signToken(userId: number, email: string): Promise<{access_token: string}> {
+
+
+    async signToken(userId: number, email: string): Promise<{ access_token: string }> {
         const payload = {
             sub: userId,
             email
@@ -146,11 +151,11 @@ export class AuthService {
                 emailVerificationToken: token
             }
         });
-    
+
         if (!user || new Date() > user.tokenExpirationDate) {
             throw new ForbiddenException("Token is invalid or has expired.");
         }
-    
+
         await this.prisma.staff.update({
             where: {
                 id: user.id
@@ -161,10 +166,20 @@ export class AuthService {
                 tokenExpirationDate: null
             }
         });
-    
+
         return { message: "Email verified successfully." };
     }
-    
-    
+
+    async getPositions() {
+        const positions = await this.prisma.position.findMany({
+            select: {
+                id: true,
+                position: true,
+            }
+        });
+        return positions;
+    }
+
+
 
 }

@@ -81,32 +81,15 @@ model RowJaw {
 
 }
 
-model Patient {
-  id Int @id @default(autoincrement())
-  name String 
-  surname String
-  Age Int?
-  phone String? 
-  email String?
-
-  schedule Schedule[]
-  allergy Allergy[]
-  diagnosis Diagnosis[]
-  photo Photo[]
-
-  districtId Int
-  district District @relation(fields: [districtId], references: [id])
-}
-
 model Branch {
   id Int @id @default(autoincrement())
   branch String 
-  
-  staff Staff[]
 
   clinicId Int 
   clinic Clinic @relation(fields: [clinicId], references: [id])
 
+  staff Staff[]
+  patient Patient[]
 }
 
 model Work {
@@ -122,6 +105,26 @@ model Work {
   typeWork TypeWork @relation(fields: [typeWorkId], references: [id])
 }
 
+model Patient {
+  id Int @id @default(autoincrement())
+  name String 
+  surname String
+  Age Int?
+  phone String? 
+  email String?
+
+  schedule Schedule[]
+  allergy Allergy[]
+  diagnosis Diagnosis[]
+  photo Photo[]
+
+  districtId Int
+  district District @relation(fields: [districtId], references: [id])
+
+  branchId Int 
+  branch Branch @relation(fields: [branchId], references: [id])
+}
+
 model Staff {
   id Int @id @default(autoincrement())
 
@@ -133,6 +136,7 @@ model Staff {
   isMale Boolean
   isEmailVerified Boolean @default(false)
   // Если мужик - true, женщина false
+  isAdmin Boolean
   email String @unique
   hash String 
 
@@ -197,6 +201,8 @@ model Schedule {
   start String 
   end String 
   description String?
+  isCanceled Boolean
+  backgroundColor String
 
   patientId Int
   patient Patient @relation(fields: [patientId], references: [id])
@@ -220,7 +226,7 @@ model Diagnosis {
   teeth Teeth @relation(fields: [teethId], references: [id])
 
   patientId Int
-  patent Patient @relation(fields: [patientId], references: [id])
+  patient Patient @relation(fields: [patientId], references: [id])
 
   staffId Int
   staff Staff @relation(fields: [staffId], references: [id])

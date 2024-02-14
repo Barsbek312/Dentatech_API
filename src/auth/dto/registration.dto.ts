@@ -23,6 +23,9 @@ export class RegistrationDto {
     isMale: boolean;
 
     @IsNotEmpty()
+    isAdmin: boolean;
+
+    @IsNotEmpty()
     clinic: string;
 
     @IsNotEmpty()

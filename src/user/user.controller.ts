@@ -9,9 +9,6 @@ export class UserController {
     @Get('me')
     getMe(@GetUser() user: Staff,
         @GetUser("email") email: Staff) {
-        console.log({
-            email,
-        })
         return user;
     }
 
