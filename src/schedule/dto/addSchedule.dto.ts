@@ -1,9 +1,6 @@
 import { IsNotEmpty, IsOptional } from "class-validator";
 
 export class AddScheduleDto {
-    @IsOptional()
-    title?: string
-
     @IsNotEmpty()
     start: string
 
@@ -14,16 +11,13 @@ export class AddScheduleDto {
     description?: string 
 
     @IsNotEmpty()
-    isCanceled: boolean
-
-    @IsNotEmpty()
     backgroundColor: string 
 
     @IsNotEmpty()
-    patientId: number
+    patientId: number 
 
     @IsNotEmpty()
-    statusId: number 
+    receptionTypeId: number
 
     @IsNotEmpty()
     staffId: number

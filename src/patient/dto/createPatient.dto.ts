@@ -8,19 +8,40 @@ export class CreatePatientDto {
     @IsNotEmpty()
     surname: string;
 
+    @IsNotEmpty()
+    isMale: boolean;
+
     @IsOptional()
-    Age?: number;
+    patronymic?: string
+
+    @IsNotEmpty()
+    birthDate: string
+
+    @IsOptional()
+    phone?: string;
+
+    @IsOptional()
+    cityId?: number;
+
+    @IsOptional()
+    street?: string;
+
+    @IsOptional()
+    where?: string;
 
     @IsEmail()
     @IsOptional()    
     email?: string;
 
-    @IsOptional()
-    phone?: string;
-
     @IsNotEmpty()
     districtId: number;
 
     @IsNotEmpty()
-    branchId: number;
+    clinicId: number;
+
+    @IsNotEmpty()
+    patientTypeId: number;
+
+    @IsNotEmpty()
+    patientStatusId: number;
 }

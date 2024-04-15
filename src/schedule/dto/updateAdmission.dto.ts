@@ -2,9 +2,6 @@ import { IsOptional } from "class-validator";
 
 export class UpdateAdmissionDto {
     @IsOptional()
-    title?: string
-
-    @IsOptional()
     start?: string
 
     @IsOptional()
@@ -14,16 +11,16 @@ export class UpdateAdmissionDto {
     description?: string 
 
     @IsOptional()
-    isCanceled?: boolean
+    receptionStatusId?: number
+
+    @IsOptional()
+    receptionTypeId?: number
 
     @IsOptional()
     backgroundColor?: string 
 
     @IsOptional()
     patientId?: number
-
-    @IsOptional()
-    statusId?: number 
 
     @IsOptional()
     staffId?: number

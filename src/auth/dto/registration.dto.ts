@@ -1,37 +1,58 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator"
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MinLength,
+} from 'class-validator';
 
 export class RegistrationDto {
-    @IsEmail()
-    @IsNotEmpty()
-    @MinLength(6)
-    email: string;
+  @IsEmail()
+  @IsNotEmpty()
+  @MinLength(6)
+  email: string;
 
-    @IsString()
-    @IsNotEmpty()
-    password: string;
+  @IsString()
+  @IsNotEmpty()
+  password: string;
 
-    @IsNotEmpty()
-    name: string;
+  @IsNotEmpty()
+  name: string;
 
-    @IsNotEmpty()
-    surname: string;
+  @IsNotEmpty()
+  surname: string;
 
-    @IsNotEmpty()
-    phone: string;
+  @IsNotEmpty()
+  phone: string;
 
-    @IsNotEmpty()
-    isMale: boolean;
+  @IsNotEmpty()
+  isMale: boolean;
 
-    @IsNotEmpty()
-    isAdmin: boolean;
+  @IsNotEmpty()
+  birthDate: string;
 
-    @IsNotEmpty()
-    clinic: string;
+  @IsNotEmpty()
+  isAdmin: boolean;
 
-    @IsNotEmpty()
-    branch: string;
+  @IsNotEmpty()
+  @IsOptional()
+  clinic?: string;
 
-    @IsNotEmpty()
-    positionId: number
+  @IsOptional()
+  branch?: string;
 
+  @IsOptional()
+  branchId: number;
+
+  @IsOptional()
+  cityId?: number;
+
+  @IsOptional()
+  street?: string;
+
+  @IsNotEmpty()
+  staffPositionId: number;
+
+  @IsNotEmpty()
+  staffStatusId: number;
 }

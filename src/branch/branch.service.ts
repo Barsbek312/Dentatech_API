@@ -5,11 +5,13 @@ import { PrismaService } from "src/prisma/prisma.service";
 export class BranchService {
     constructor(private prisma: PrismaService) {}
 
-    async createBranch(clinicId: number, titleOfBranch: string): Promise<number> {
+    async createBranch(clinicId: number, titleOfBranch: string, cityId: number, street: string): Promise<number> {
         try {
             const branchObj = await this.prisma.branch.create({
                 data: {
                     branch: titleOfBranch,
+                    cityId, 
+                    street,
                     clinicId
                 }
             })
@@ -17,6 +19,20 @@ export class BranchService {
             return branchObj.id;
         } catch(error) {
             throw error;
+        }
+    }
+
+    async findById(branchId: number) {
+        try {
+            const branch = await this.prisma.branch.findUnique({
+                where: {
+                    id: branchId
+                }
+            })
+
+            return branch
+        } catch(err) {
+            throw err;
         }
     }
 

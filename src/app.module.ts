@@ -7,6 +7,12 @@ import { ClinicModule } from './clinic/clinic.module';
 import { BranchModule } from './branch/branch.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { PatientModule } from './patient/patient.module';
+import { CityModule } from './city/city.module';
+import { ToothModule } from './tooth/tooth.module';
+import { DiseaseModule } from './disease/disease.module';
+import { ProcedureModule } from './procedure/procedure.module';
+import { BillModule } from './bill/bill.module';
+import { DiseaseHistoryModule } from './disease-history/disease-history.module';
 
 @Module({
   imports: [
@@ -21,7 +27,12 @@ import { PatientModule } from './patient/patient.module';
     BranchModule,
     ScheduleModule,
     PatientModule,
-  ]
+    CityModule,
+    ToothModule,
+    DiseaseModule,
+    ProcedureModule,
+    BillModule,
+    DiseaseHistoryModule
+  ],
 })
-
 export class AppModule {}

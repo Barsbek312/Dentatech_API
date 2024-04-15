@@ -10,172 +10,360 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model District {
+// 1 уровень
+
+model ToothPart {
+  id        Int    @id @default(autoincrement())
+  toothPart String
+
+  teethPartConnect ToothPartConnect[]
+}
+
+model ToothType {
+  id        Int    @id @default(autoincrement())
+  toothType String
+
+  teeth Tooth[]
+}
+
+model City {
   id Int @id @default(autoincrement())
+
+  city String
+
+  branches Branch[]
+  patiens  Patient[]
+}
+
+model District {
+  id       Int    @id @default(autoincrement())
   district String
 
   patients Patient[]
-
 }
 
-model StatusSchedule {
-  id Int @id @default(autoincrement())
-  status String
+model Allergy {
+  id      Int    @id @default(autoincrement())
+  allergy String
 
-  schedule Schedule[]
+  patientAllergies PatientAllergy[]
 }
 
-model Clinic {
-  id Int @id @default(autoincrement())
-  clinic String
+model PatientType {
+  id          Int    @id @default(autoincrement())
+  patientType String
 
-  branches Branch[]
+  patients Patient[]
 }
 
-model Position {
-  id Int @id @default(autoincrement())
-  position String
+model PatientStatus {
+  id            Int    @id @default(autoincrement())
+  patientStatus String
 
-  staff Staff[]
-
+  patients Patient[]
 }
 
-model StatusTreatment {
-  id Int @id @default(autoincrement())
-  status String
+model ReceptionStatus {
+  id              Int    @id @default(autoincrement())
+  receptionStatus String
 
-  treatment Treatment[]
-
+  receptions Reception[]
 }
 
-model TypeWork {
-  id Int @id @default(autoincrement())
-  type String
+model ReceptionType {
+  id            Int    @id @default(autoincrement())
+  receptionType String
 
-  works Work[]
-
-}
-
-model Disease {
-  id Int @id @default(autoincrement())
-
-  disease String
-  diagnosis Diagnosis[]
+  receptions Reception[]
 }
 
 model Jaw {
-  id Int @id @default(autoincrement())
+  id  Int    @id @default(autoincrement())
   jaw String
 
-  rowJaws RowJaw[]
+  rows Row[]
 }
 
-model RowJaw {
-  id Int @id @default(autoincrement())
-  row Int
+model Clinic {
+  id     Int    @id @default(autoincrement())
+  clinic String
 
-  teeth Teeth[]
+  diseases   Disease[]
+  branches   Branch[]
+  patients   Patient[]
+  procedured Procedure[]
+}
 
-  jawId Int 
-  jaw Jaw @relation(fields: [jawId], references: [id])
+model StaffPosition {
+  id            Int    @id @default(autoincrement())
+  staffPosition String
 
+  staff Staff[]
+}
+
+model StaffStatus {
+  id          Int    @id @default(autoincrement())
+  staffStatus String
+
+  staff Staff[]
+}
+
+model TemplateType {
+  id           Int    @id @default(autoincrement())
+  templateType String
+
+  templates Template[]
+}
+
+model ProcedureType {
+  id            Int    @id @default(autoincrement())
+  procedureType String
+
+  procedures Procedure[]
+}
+
+// 2 уровень
+
+model Disease {
+  id      Int    @id @default(autoincrement())
+  disease String
+
+  clinicId Int
+  clinic   Clinic @relation(fields: [clinicId], references: [id])
+
+  diagnosis Diagnosis[]
+}
+
+model Row {
+  id  Int    @id @default(autoincrement())
+  row String
+
+  jawId Int
+  jaw   Jaw @relation(fields: [jawId], references: [id])
+
+  teeth Tooth[]
 }
 
 model Branch {
-  id Int @id @default(autoincrement())
-  branch String 
+  id     Int    @id @default(autoincrement())
+  branch String
+  street String
 
-  clinicId Int 
-  clinic Clinic @relation(fields: [clinicId], references: [id])
+  clinicId Int
+  clinic   Clinic @relation(fields: [clinicId], references: [id])
+
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
 
   staff Staff[]
-  patient Patient[]
 }
 
-model Work {
-  id Int @id @default(autoincrement())
-  work String
+model Procedure {
+  id          Int     @id @default(autoincrement())
+  procedure   String
+  description String?
+  designation String?
+  color       String?
+  price       Decimal
 
-  descriptionOfWork String?
+  procedureTypeId Int
+  procedureType   ProcedureType @relation(fields: [procedureTypeId], references: [id])
 
-  workPrice WorkPrice[]
-  treatMentWork TreatmentWork[]
+  clinicId Int
+  clinic   Clinic @relation(fields: [clinicId], references: [id])
 
-  typeWorkId Int 
-  typeWork TypeWork @relation(fields: [typeWorkId], references: [id])
+  templates         Template[]
+  templatesText     TemplateText[]
+  plannedProcedures PlannedProcedure[]
+  medicalHistory    DiseaseHistory[]
 }
+
+// 3 уровень
 
 model Patient {
-  id Int @id @default(autoincrement())
-  name String 
-  surname String
-  Age Int?
-  phone String? 
-  email String?
-
-  schedule Schedule[]
-  allergy Allergy[]
-  diagnosis Diagnosis[]
-  photo Photo[]
+  id          Int       @id @default(autoincrement())
+  name        String
+  surname     String
+  isMale      Boolean
+  // Если мужик - true, женщина false
+  patronymic  String?
+  birthDate   DateTime? @db.Date
+  phone       String?
+  email       String?
+  street      String?
+  where       String?
+  // Где он узнал?
+  description String?
 
   districtId Int
-  district District @relation(fields: [districtId], references: [id])
+  district   District @relation(fields: [districtId], references: [id])
 
-  branchId Int 
-  branch Branch @relation(fields: [branchId], references: [id])
+  patientTypeId Int
+  patientType   PatientType @relation(fields: [patientTypeId], references: [id])
+
+  patientStatusId Int
+  patientStatus   PatientStatus @relation(fields: [patientStatusId], references: [id])
+
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
+
+  clinicId Int
+  clinic   Clinic @relation(fields: [clinicId], references: [id])
+
+  patientAllergies  PatientAllergy[]
+  photo             Photo[]
+  receptions        Reception[]
+  diagnosis         Diagnosis[]
+  plannedProcedures PlannedProcedure[]
+  templatesHistory  TemplateHistory[]
 }
 
 model Staff {
   id Int @id @default(autoincrement())
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  name String 
-  surname String
-  phone String
-  isMale Boolean
-  isEmailVerified Boolean @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  name            String
+  surname         String
+  isMale          Boolean
+  phone           String?
+  birthDate       DateTime? @db.Date
   // Если мужик - true, женщина false
-  isAdmin Boolean
-  email String @unique
-  hash String 
+  isEmailVerified Boolean   @default(false)
+  isAdmin         Boolean   @default(false)
+  email           String    @unique
+  hash            String
 
-  emailVerificationToken   String? @unique @db.VarChar(255)
-  tokenExpirationDate      DateTime?
-
-  schedule Schedule[]
-  diagnosis Diagnosis[]
+  emailVerificationToken String?   @unique @db.VarChar(255)
+  tokenExpirationDate    DateTime?
 
   branchId Int
-  branch Branch @relation(fields: [branchId], references: [id])
+  branch   Branch @relation(fields: [branchId], references: [id])
 
-  positionId Int
-  position Position @relation(fields: [positionId], references: [id])
+  staffPositionId Int
+  staffPosition   StaffPosition @relation(fields: [staffPositionId], references: [id])
 
+  staffStatusId Int
+  staffStatus   StaffStatus @relation(fields: [staffStatusId], references: [id])
+
+  receptions        Reception[]
+  diagnosis         Diagnosis[]
+  plannedProcedures PlannedProcedure[]
 }
 
-model WorkPrice {
+model Template {
+  id    Int    @id @default(autoincrement())
+  title String
+
+  templateTypeId Int
+  templateType   TemplateType @relation(fields: [templateTypeId], references: [id])
+
+  procedureId Int
+  procedure   Procedure @relation(fields: [procedureId], references: [id])
+
+  templateInputs     TemplateInput[]
+  templateCheckboxes TemplateCheckbox[]
+  templateSelects    TemplateSelect[]
+  templateHistories  TemplateHistory[]
+}
+
+model TemplateText {
   id Int @id @default(autoincrement())
 
-  title String 
-  price Int
+  title String
+  text  String
 
-  workId Int
-  work Work @relation(fields: [workId], references: [id])
-
+  procedureId Int
+  procedure   Procedure @relation(fields: [procedureId], references: [id])
 }
 
-model Teeth {
+// 4 уровень
+
+model TemplateInput {
   id Int @id @default(autoincrement())
 
-  name String
+  title String
 
-  diagnosis Diagnosis[]
+  templateId Int
+  template   Template @relation(fields: [templateId], references: [id])
 
-  rowJawId Int 
-  rowJaw RowJaw @relation(fields: [rowJawId], references: [id])
+  templateInputsHistory TemplateInputHistory[]
 }
 
+model TemplateCheckbox {
+  id Int @id @default(autoincrement())
+
+  title String
+
+  templateId Int
+  template   Template @relation(fields: [templateId], references: [id])
+
+  templateCheckboxOptions   TemplateCheckboxOption[]
+  templateCheckboxesHistory TemplateCheckboxHistory[]
+}
+
+model TemplateSelect {
+  id Int @id @default(autoincrement())
+
+  title String
+
+  templateId Int
+  template   Template @relation(fields: [templateId], references: [id])
+
+  templateSelectsHistory TemplateSelectHistory[]
+  templateSelectsOption  TemplateSelectOption[]
+}
+
+model Tooth {
+  id    Int    @id @default(autoincrement())
+  tooth String
+
+  toothTypeId Int
+  toothType   ToothType @relation(fields: [toothTypeId], references: [id])
+
+  rowId Int
+  row   Row @relation(fields: [rowId], references: [id])
+
+  teethPartConnect ToothPartConnect[]
+  templatesHistory TemplateHistory[]
+  photo            Photo[]
+}
+
+model PatientAllergy {
+  id Int @id @default(autoincrement())
+
+  allergyId Int
+  allergy   Allergy @relation(fields: [allergyId], references: [id])
+
+  patientId Int
+  patient   Patient @relation(fields: [patientId], references: [id])
+}
+
+model Reception {
+  id Int @id @default(autoincrement())
+
+  start           DateTime
+  end             DateTime
+  description     String?
+  backgroundColor String
+
+  receptionStatusId Int             @default(5)
+  receptionStatus   ReceptionStatus @relation(fields: [receptionStatusId], references: [id])
+
+  receptionTypeId Int
+  receptionType   ReceptionType @relation(fields: [receptionTypeId], references: [id])
+
+  patientId Int
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  staffId Int
+  staff   Staff @relation(fields: [staffId], references: [id])
+
+  templatesHistory TemplateHistory[]
+  medicalHistory   DiseaseHistory[]
+}
+
+// 5 уровень
 
 model Photo {
   id Int @id @default(autoincrement())
@@ -183,80 +371,180 @@ model Photo {
   pictureURL String
 
   patientId Int
-  patient Patient @relation(fields: [patientId], references: [id])
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  toothId Int
+  tooth   Tooth @relation(fields: [toothId], references: [id])
 }
 
-model Allergy {
-  id Int @id @default(autoincrement())
-  title String
-
-  patientId Int
-  patient Patient @relation(fields: [patientId], references: [id])
-}
-
-model Schedule {
+model TemplateHistory {
   id Int @id @default(autoincrement())
 
-  title String
-  start String 
-  end String 
-  description String?
-  isCanceled Boolean
-  backgroundColor String
+  text String
+
+  templateId Int
+  template   Template @relation(fields: [templateId], references: [id])
 
   patientId Int
-  patient Patient @relation(fields: [patientId], references: [id])
+  patient   Patient @relation(fields: [patientId], references: [id])
 
-  statusId Int
-  status StatusSchedule @relation(fields: [statusId], references: [id])
+  toothId Int
+  tooth   Tooth @relation(fields: [toothId], references: [id])
 
-  staffId Int
-  staff Staff @relation(fields: [staffId], references: [id])
+  receptionId Int
+  reception   Reception @relation(fields: [receptionId], references: [id], onDelete: Cascade)
+
+  templateSelectsHistory    TemplateSelectHistory[]
+  templateCheckboxesHistory TemplateCheckboxHistory[]
+  templateInputsHistory     TemplateInputHistory[]
+  templateTextsHistory      TemplateTextHistory[]
 }
+
+model ToothPartConnect {
+  id Int @id @default(autoincrement())
+
+  toothPartId Int
+  toothPart   ToothPart @relation(fields: [toothPartId], references: [id])
+
+  toothId Int
+  tooth   Tooth @relation(fields: [toothId], references: [id])
+
+  diagnosis         Diagnosis[]
+  plannedProcedures PlannedProcedure[]
+  medicalHistory    DiseaseHistory[]
+}
+
+model TemplateSelectOption {
+  id Int @id @default(autoincrement())
+
+  option String
+
+  templateSelectId Int
+  templateSelect   TemplateSelect @relation(fields: [templateSelectId], references: [id])
+
+  templateSelectsHistory TemplateSelectHistory[]
+}
+
+model TemplateCheckboxOption {
+  id Int @id @default(autoincrement())
+
+  option String
+
+  templateCheckboxId Int
+  templateCheckbox   TemplateCheckbox @relation(fields: [templateCheckboxId], references: [id])
+
+  templateCheckboxOptionsHistory TemplateCheckboxOptionHistory[]
+}
+
+// 6 уровень
 
 model Diagnosis {
   id Int @id @default(autoincrement())
 
-  treatment Treatment[]
-
   diseaseId Int
-  disease Disease @relation(fields: [diseaseId], references: [id])
+  diseases  Disease @relation(fields: [diseaseId], references: [id])
 
-  teethId Int
-  teeth Teeth @relation(fields: [teethId], references: [id])
+  toothPartConnectId Int
+  toothPartConnect   ToothPartConnect @relation(fields: [toothPartConnectId], references: [id])
 
   patientId Int
-  patient Patient @relation(fields: [patientId], references: [id])
+  patient   Patient @relation(fields: [patientId], references: [id])
 
   staffId Int
-  staff Staff @relation(fields: [staffId], references: [id])
+  staff   Staff @relation(fields: [staffId], references: [id])
+
+  updatedAt DateTime @updatedAt
 }
 
-model Treatment {
+model PlannedProcedure {
   id Int @id @default(autoincrement())
 
-  name String
+  toothPartConnectId Int
+  toothPartConnect   ToothPartConnect @relation(fields: [toothPartConnectId], references: [id])
 
-  treatmentWork TreatmentWork[]
+  procedureId Int
+  procedure   Procedure @relation(fields: [procedureId], references: [id])
 
-  diagnosisId Int
-  diagnosis Diagnosis @relation(fields: [diagnosisId], references: [id])
+  patientId Int
+  patient   Patient @relation(fields: [patientId], references: [id])
 
-  statusId Int 
-  status StatusTreatment @relation(fields: [statusId], references: [id])
+  staffId Int
+  staff   Staff @relation(fields: [staffId], references: [id])
+
+  updatedAt DateTime @updatedAt
 }
 
-model TreatmentWork {
+model DiseaseHistory {
   id Int @id @default(autoincrement())
 
-  workId Int
-  work Work @relation(fields: [workId], references: [id])
+  receptionId Int
+  reception   Reception @relation(fields: [receptionId], references: [id], onDelete: Cascade)
 
-  treatmentId Int
-  treatment Treatment @relation(fields: [treatmentId], references: [id])
+  procedureId Int
+  procedure   Procedure @relation(fields: [procedureId], references: [id])
+
+  toothPartConnectId Int
+  toothPartConnect    ToothPartConnect @relation(fields: [toothPartConnectId], references: [id])
+
+  updatedAt DateTime @updatedAt
 }
 
+model TemplateTextHistory {
+  id Int @id @default(autoincrement())
 
+  text String
+  date DateTime @default(now()) @db.Date
 
+  templateHistoryId Int
+  templateHistory   TemplateHistory @relation(fields: [templateHistoryId], references: [id], onDelete: Cascade)
+}
 
+model TemplateInputHistory {
+  id Int @id @default(autoincrement())
 
+  value String
+  date  DateTime @default(now()) @db.Date
+
+  templateInputId Int
+  templateInput   TemplateInput @relation(fields: [templateInputId], references: [id])
+
+  templateHistoryId Int
+  templateHistory   TemplateHistory @relation(fields: [templateHistoryId], references: [id], onDelete: Cascade)
+}
+
+model TemplateCheckboxHistory {
+  id Int @id @default(autoincrement())
+
+  templateCheckboxId Int
+  templateCheckbox   TemplateCheckbox @relation(fields: [templateCheckboxId], references: [id])
+
+  templateHistoryId Int
+  templateHistory   TemplateHistory @relation(fields: [templateHistoryId], references: [id], onDelete: Cascade)
+
+  templateCheckboxOptionsHistroy TemplateCheckboxOptionHistory[]
+}
+
+model TemplateSelectHistory {
+  id Int @id @default(autoincrement())
+
+  templateSelectId Int
+  templateSelect   TemplateSelect @relation(fields: [templateSelectId], references: [id])
+
+  templateSelectOptionId Int
+  templateSelectOption   TemplateSelectOption @relation(fields: [templateSelectOptionId], references: [id])
+
+  templateHistoryId Int
+  templateHistory   TemplateHistory @relation(fields: [templateHistoryId], references: [id], onDelete: Cascade)
+}
+
+// 7 уровень
+
+model TemplateCheckboxOptionHistory {
+  id Int @id @default(autoincrement())
+
+  templateCheckboxHistoryId Int
+  templateCheckboxHistory   TemplateCheckboxHistory @relation(fields: [templateCheckboxHistoryId], references: [id], onDelete: Cascade)
+
+  templateCheckboxOptionId Int
+  templateCheckboxOption   TemplateCheckboxOption @relation(fields: [templateCheckboxOptionId], references: [id])
+}
