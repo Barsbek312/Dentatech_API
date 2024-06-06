@@ -1,0 +1,535 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table ToothPart {
+  id Int [pk, increment]
+  toothPart String [not null]
+  teethPartConnect ToothPartConnect [not null]
+}
+
+Table ToothType {
+  id Int [pk, increment]
+  toothType String [not null]
+  teeth Tooth [not null]
+}
+
+Table City {
+  id Int [pk, increment]
+  city String [not null]
+  branches Branch [not null]
+  patiens Patient [not null]
+}
+
+Table District {
+  id Int [pk, increment]
+  district String [not null]
+  patients Patient [not null]
+}
+
+Table Allergy {
+  id Int [pk, increment]
+  allergy String [not null]
+  patientAllergies PatientAllergy [not null]
+}
+
+Table PatientType {
+  id Int [pk, increment]
+  patientType String [not null]
+  patients Patient [not null]
+}
+
+Table PatientStatus {
+  id Int [pk, increment]
+  patientStatus String [not null]
+  patients Patient [not null]
+}
+
+Table ReceptionStatus {
+  id Int [pk, increment]
+  receptionStatus String [not null]
+  receptions Reception [not null]
+}
+
+Table ReceptionType {
+  id Int [pk, increment]
+  receptionType String [not null]
+  receptions Reception [not null]
+}
+
+Table Jaw {
+  id Int [pk, increment]
+  jaw String [not null]
+  rows Row [not null]
+}
+
+Table Clinic {
+  id Int [pk, increment]
+  clinic String [not null]
+  diseases Disease [not null]
+  branches Branch [not null]
+  patients Patient [not null]
+  procedured Procedure [not null]
+}
+
+Table StaffPosition {
+  id Int [pk, increment]
+  staffPosition String [not null]
+  staff Staff [not null]
+}
+
+Table StaffStatus {
+  id Int [pk, increment]
+  staffStatus String [not null]
+  staff Staff [not null]
+}
+
+Table TemplateType {
+  id Int [pk, increment]
+  templateType String [not null]
+  templates Template [not null]
+}
+
+Table ProcedureType {
+  id Int [pk, increment]
+  procedureType String [not null]
+  procedures Procedure [not null]
+}
+
+Table Disease {
+  id Int [pk, increment]
+  disease String [not null]
+  clinicId Int [not null]
+  clinic Clinic [not null]
+  diagnosis Diagnosis [not null]
+}
+
+Table Row {
+  id Int [pk, increment]
+  row String [not null]
+  jawId Int [not null]
+  jaw Jaw [not null]
+  teeth Tooth [not null]
+}
+
+Table Branch {
+  id Int [pk, increment]
+  branch String [not null]
+  street String [not null]
+  clinicId Int [not null]
+  clinic Clinic [not null]
+  cityId Int [not null]
+  city City [not null]
+  staff Staff [not null]
+}
+
+Table Procedure {
+  id Int [pk, increment]
+  procedure String [not null]
+  description String
+  designation String
+  color String
+  price Decimal [not null]
+  procedureTypeId Int [not null]
+  procedureType ProcedureType [not null]
+  clinicId Int [not null]
+  clinic Clinic [not null]
+  templates Template [not null]
+  templatesText TemplateText [not null]
+  plannedProcedures PlannedProcedure [not null]
+  medicalHistory DiseaseHistory [not null]
+}
+
+Table Patient {
+  id Int [pk, increment]
+  name String [not null]
+  surname String [not null]
+  isMale Boolean [not null]
+  patronymic String
+  birthDate DateTime
+  phone String
+  email String
+  street String
+  where String
+  description String
+  districtId Int [not null]
+  district District [not null]
+  patientTypeId Int [not null]
+  patientType PatientType [not null]
+  patientStatusId Int [not null]
+  patientStatus PatientStatus [not null]
+  cityId Int [not null]
+  city City [not null]
+  clinicId Int [not null]
+  clinic Clinic [not null]
+  patientAllergies PatientAllergy [not null]
+  photo Photo [not null]
+  receptions Reception [not null]
+  diagnosis Diagnosis [not null]
+  plannedProcedures PlannedProcedure [not null]
+  templatesHistory TemplateHistory [not null]
+}
+
+Table Staff {
+  id Int [pk, increment]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  name String [not null]
+  surname String [not null]
+  isMale Boolean [not null]
+  phone String
+  birthDate DateTime
+  isEmailVerified Boolean [not null, default: false]
+  isAdmin Boolean [not null, default: false]
+  email String [unique, not null]
+  hash String [not null]
+  emailVerificationToken String [unique]
+  tokenExpirationDate DateTime
+  branchId Int [not null]
+  branch Branch [not null]
+  staffPositionId Int [not null]
+  staffPosition StaffPosition [not null]
+  staffStatusId Int [not null]
+  staffStatus StaffStatus [not null]
+  receptions Reception [not null]
+  diagnosis Diagnosis [not null]
+  plannedProcedures PlannedProcedure [not null]
+}
+
+Table Template {
+  id Int [pk, increment]
+  title String [not null]
+  templateTypeId Int [not null]
+  templateType TemplateType [not null]
+  procedureId Int [not null]
+  procedure Procedure [not null]
+  templateInputs TemplateInput [not null]
+  templateCheckboxes TemplateCheckbox [not null]
+  templateSelects TemplateSelect [not null]
+  templateHistories TemplateHistory [not null]
+}
+
+Table TemplateText {
+  id Int [pk, increment]
+  title String [not null]
+  text String [not null]
+  procedureId Int [not null]
+  procedure Procedure [not null]
+}
+
+Table TemplateInput {
+  id Int [pk, increment]
+  title String [not null]
+  templateId Int [not null]
+  template Template [not null]
+  templateInputsHistory TemplateInputHistory [not null]
+}
+
+Table TemplateCheckbox {
+  id Int [pk, increment]
+  title String [not null]
+  templateId Int [not null]
+  template Template [not null]
+  templateCheckboxOptions TemplateCheckboxOption [not null]
+  templateCheckboxesHistory TemplateCheckboxHistory [not null]
+}
+
+Table TemplateSelect {
+  id Int [pk, increment]
+  title String [not null]
+  templateId Int [not null]
+  template Template [not null]
+  templateSelectsHistory TemplateSelectHistory [not null]
+  templateSelectsOption TemplateSelectOption [not null]
+}
+
+Table Tooth {
+  id Int [pk, increment]
+  tooth String [not null]
+  toothTypeId Int [not null]
+  toothType ToothType [not null]
+  rowId Int [not null]
+  row Row [not null]
+  teethPartConnect ToothPartConnect [not null]
+  templatesHistory TemplateHistory [not null]
+  photo Photo [not null]
+}
+
+Table PatientAllergy {
+  id Int [pk, increment]
+  allergyId Int [not null]
+  allergy Allergy [not null]
+  patientId Int [not null]
+  patient Patient [not null]
+}
+
+Table Reception {
+  id Int [pk, increment]
+  start DateTime [not null]
+  end DateTime [not null]
+  description String
+  backgroundColor String [not null]
+  receptionStatusId Int [not null, default: 5]
+  receptionStatus ReceptionStatus [not null]
+  receptionTypeId Int [not null]
+  receptionType ReceptionType [not null]
+  patientId Int [not null]
+  patient Patient [not null]
+  staffId Int [not null]
+  staff Staff [not null]
+  templatesHistory TemplateHistory [not null]
+  medicalHistory DiseaseHistory [not null]
+}
+
+Table Photo {
+  id Int [pk, increment]
+  pictureURL String [not null]
+  patientId Int [not null]
+  patient Patient [not null]
+  toothId Int [not null]
+  tooth Tooth [not null]
+}
+
+Table TemplateHistory {
+  id Int [pk, increment]
+  text String [not null]
+  templateId Int [not null]
+  template Template [not null]
+  patientId Int [not null]
+  patient Patient [not null]
+  toothId Int [not null]
+  tooth Tooth [not null]
+  receptionId Int [not null]
+  reception Reception [not null]
+  templateSelectsHistory TemplateSelectHistory [not null]
+  templateCheckboxesHistory TemplateCheckboxHistory [not null]
+  templateInputsHistory TemplateInputHistory [not null]
+  templateTextsHistory TemplateTextHistory [not null]
+}
+
+Table ToothPartConnect {
+  id Int [pk, increment]
+  toothPartId Int [not null]
+  toothPart ToothPart [not null]
+  toothId Int [not null]
+  tooth Tooth [not null]
+  diagnosis Diagnosis [not null]
+  plannedProcedures PlannedProcedure [not null]
+  medicalHistory DiseaseHistory [not null]
+}
+
+Table TemplateSelectOption {
+  id Int [pk, increment]
+  option String [not null]
+  templateSelectId Int [not null]
+  templateSelect TemplateSelect [not null]
+  templateSelectsHistory TemplateSelectHistory [not null]
+}
+
+Table TemplateCheckboxOption {
+  id Int [pk, increment]
+  option String [not null]
+  templateCheckboxId Int [not null]
+  templateCheckbox TemplateCheckbox [not null]
+  templateCheckboxOptionsHistory TemplateCheckboxOptionHistory [not null]
+}
+
+Table Diagnosis {
+  id Int [pk, increment]
+  diseaseId Int [not null]
+  diseases Disease [not null]
+  toothPartConnectId Int [not null]
+  toothPartConnect ToothPartConnect [not null]
+  patientId Int [not null]
+  patient Patient [not null]
+  staffId Int [not null]
+  staff Staff [not null]
+  updatedAt DateTime [not null]
+}
+
+Table PlannedProcedure {
+  id Int [pk, increment]
+  toothPartConnectId Int [not null]
+  toothPartConnect ToothPartConnect [not null]
+  procedureId Int [not null]
+  procedure Procedure [not null]
+  patientId Int [not null]
+  patient Patient [not null]
+  staffId Int [not null]
+  staff Staff [not null]
+  updatedAt DateTime [not null]
+}
+
+Table DiseaseHistory {
+  id Int [pk, increment]
+  receptionId Int [not null]
+  reception Reception [not null]
+  procedureId Int [not null]
+  procedure Procedure [not null]
+  toothPartConnectId Int [not null]
+  toothPartConnect ToothPartConnect [not null]
+  updatedAt DateTime [not null]
+}
+
+Table TemplateTextHistory {
+  id Int [pk, increment]
+  text String [not null]
+  date DateTime [default: `now()`, not null]
+  templateHistoryId Int [not null]
+  templateHistory TemplateHistory [not null]
+}
+
+Table TemplateInputHistory {
+  id Int [pk, increment]
+  value String [not null]
+  date DateTime [default: `now()`, not null]
+  templateInputId Int [not null]
+  templateInput TemplateInput [not null]
+  templateHistoryId Int [not null]
+  templateHistory TemplateHistory [not null]
+}
+
+Table TemplateCheckboxHistory {
+  id Int [pk, increment]
+  templateCheckboxId Int [not null]
+  templateCheckbox TemplateCheckbox [not null]
+  templateHistoryId Int [not null]
+  templateHistory TemplateHistory [not null]
+  templateCheckboxOptionsHistroy TemplateCheckboxOptionHistory [not null]
+}
+
+Table TemplateSelectHistory {
+  id Int [pk, increment]
+  templateSelectId Int [not null]
+  templateSelect TemplateSelect [not null]
+  templateSelectOptionId Int [not null]
+  templateSelectOption TemplateSelectOption [not null]
+  templateHistoryId Int [not null]
+  templateHistory TemplateHistory [not null]
+}
+
+Table TemplateCheckboxOptionHistory {
+  id Int [pk, increment]
+  templateCheckboxHistoryId Int [not null]
+  templateCheckboxHistory TemplateCheckboxHistory [not null]
+  templateCheckboxOptionId Int [not null]
+  templateCheckboxOption TemplateCheckboxOption [not null]
+}
+
+Ref: Disease.clinicId > Clinic.id
+
+Ref: Row.jawId > Jaw.id
+
+Ref: Branch.clinicId > Clinic.id
+
+Ref: Branch.cityId > City.id
+
+Ref: Procedure.procedureTypeId > ProcedureType.id
+
+Ref: Procedure.clinicId > Clinic.id
+
+Ref: Patient.districtId > District.id
+
+Ref: Patient.patientTypeId > PatientType.id
+
+Ref: Patient.patientStatusId > PatientStatus.id
+
+Ref: Patient.cityId > City.id
+
+Ref: Patient.clinicId > Clinic.id
+
+Ref: Staff.branchId > Branch.id
+
+Ref: Staff.staffPositionId > StaffPosition.id
+
+Ref: Staff.staffStatusId > StaffStatus.id
+
+Ref: Template.templateTypeId > TemplateType.id
+
+Ref: Template.procedureId > Procedure.id
+
+Ref: TemplateText.procedureId > Procedure.id
+
+Ref: TemplateInput.templateId > Template.id
+
+Ref: TemplateCheckbox.templateId > Template.id
+
+Ref: TemplateSelect.templateId > Template.id
+
+Ref: Tooth.toothTypeId > ToothType.id
+
+Ref: Tooth.rowId > Row.id
+
+Ref: PatientAllergy.allergyId > Allergy.id
+
+Ref: PatientAllergy.patientId > Patient.id
+
+Ref: Reception.receptionStatusId > ReceptionStatus.id
+
+Ref: Reception.receptionTypeId > ReceptionType.id
+
+Ref: Reception.patientId > Patient.id
+
+Ref: Reception.staffId > Staff.id
+
+Ref: Photo.patientId > Patient.id
+
+Ref: Photo.toothId > Tooth.id
+
+Ref: TemplateHistory.templateId > Template.id
+
+Ref: TemplateHistory.patientId > Patient.id
+
+Ref: TemplateHistory.toothId > Tooth.id
+
+Ref: TemplateHistory.receptionId > Reception.id [delete: Cascade]
+
+Ref: ToothPartConnect.toothPartId > ToothPart.id
+
+Ref: ToothPartConnect.toothId > Tooth.id
+
+Ref: TemplateSelectOption.templateSelectId > TemplateSelect.id
+
+Ref: TemplateCheckboxOption.templateCheckboxId > TemplateCheckbox.id
+
+Ref: Diagnosis.diseaseId > Disease.id
+
+Ref: Diagnosis.toothPartConnectId > ToothPartConnect.id
+
+Ref: Diagnosis.patientId > Patient.id
+
+Ref: Diagnosis.staffId > Staff.id
+
+Ref: PlannedProcedure.toothPartConnectId > ToothPartConnect.id
+
+Ref: PlannedProcedure.procedureId > Procedure.id
+
+Ref: PlannedProcedure.patientId > Patient.id
+
+Ref: PlannedProcedure.staffId > Staff.id
+
+Ref: DiseaseHistory.receptionId > Reception.id [delete: Cascade]
+
+Ref: DiseaseHistory.procedureId > Procedure.id
+
+Ref: DiseaseHistory.toothPartConnectId > ToothPartConnect.id
+
+Ref: TemplateTextHistory.templateHistoryId > TemplateHistory.id [delete: Cascade]
+
+Ref: TemplateInputHistory.templateInputId > TemplateInput.id
+
+Ref: TemplateInputHistory.templateHistoryId > TemplateHistory.id [delete: Cascade]
+
+Ref: TemplateCheckboxHistory.templateCheckboxId > TemplateCheckbox.id
+
+Ref: TemplateCheckboxHistory.templateHistoryId > TemplateHistory.id [delete: Cascade]
+
+Ref: TemplateSelectHistory.templateSelectId > TemplateSelect.id
+
+Ref: TemplateSelectHistory.templateSelectOptionId > TemplateSelectOption.id
+
+Ref: TemplateSelectHistory.templateHistoryId > TemplateHistory.id [delete: Cascade]
+
+Ref: TemplateCheckboxOptionHistory.templateCheckboxHistoryId > TemplateCheckboxHistory.id [delete: Cascade]
+
+Ref: TemplateCheckboxOptionHistory.templateCheckboxOptionId > TemplateCheckboxOption.id
