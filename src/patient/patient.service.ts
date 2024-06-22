@@ -257,7 +257,33 @@ export class PatientService {
           },
         );
 
-        
+      return res;
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  }
+
+  async getStaffPatientList(dentistId: string) {
+    try {
+      const res =
+        await this.prismaService.patient.findMany(
+          {
+            where: {
+              receptions: {
+                some: {
+                  staffId: parseInt(dentistId),
+                },
+              },
+            },
+            select: {
+              id: true,
+              name: true,
+              surname: true,
+              phone: true,
+              patientStatusId: true,
+            },
+          },
+        );
 
       return res;
     } catch (err) {

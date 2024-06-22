@@ -68,4 +68,9 @@ export class PatientController {
       dto,
     );
   }
+
+  @Get('get-staff-patient-list/:id')
+  async getStaffPatientList(@Param('id') dentistId: string) {
+    return this.patientService.getStaffPatientList(dentistId);
+  }
 }

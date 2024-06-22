@@ -44,6 +44,19 @@ export class BranchService {
                         id: parseInt(branchId)
                     }
                 },
+                select: {
+                    id: true,
+                    branch: true,
+                    street: true,
+                    clinicId: true,
+                    city: {
+                        select: {
+                            id: true,
+                            city: true
+                        }
+                    }
+
+                }
             });
 
             const clinic = await this.prisma.clinic.findFirst({

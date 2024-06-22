@@ -13,6 +13,7 @@ import { DiseaseModule } from './disease/disease.module';
 import { ProcedureModule } from './procedure/procedure.module';
 import { BillModule } from './bill/bill.module';
 import { DiseaseHistoryModule } from './disease-history/disease-history.module';
+import { StaffModule } from './staff/staff.module';
 
 @Module({
   imports: [
@@ -32,7 +33,8 @@ import { DiseaseHistoryModule } from './disease-history/disease-history.module';
     DiseaseModule,
     ProcedureModule,
     BillModule,
-    DiseaseHistoryModule
+    DiseaseHistoryModule,
+    StaffModule
   ],
 })
 export class AppModule {}
