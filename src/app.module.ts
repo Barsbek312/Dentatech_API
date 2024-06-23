@@ -34,7 +34,7 @@ import { StaffModule } from './staff/staff.module';
     ProcedureModule,
     BillModule,
     DiseaseHistoryModule,
-    StaffModule
+    StaffModule,
   ],
 })
 export class AppModule {}

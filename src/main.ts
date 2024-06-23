@@ -1,7 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+
+export const dynamicImport = async (packageName: string) =>
+  new Function(`return import('${packageName}')`)();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,7 +30,20 @@ async function bootstrap() {
     whitelist: true
   }));
 
+  const adminJSModule = await dynamicImport('adminjs');
+  const AdminJS = adminJSModule.default;
+
+  const AdminJSPrisma = await dynamicImport('@adminjs/prisma');
+
+  AdminJS.registerAdapter({
+    Resource: AdminJSPrisma.Resource,
+    Database: AdminJSPrisma.Database, // Change with whatever adapter you want to use
+  });
+
+  const globalPrefix = 'admin';
+
   await app.listen(3333);
+  Logger.log(`🚀 Application is running on: http://localhost:${3333}/${globalPrefix}`);
+
 }
 bootstrap();
-
