@@ -6,6 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+
   const config = new DocumentBuilder()
     .setTitle("Dentatech API service")
     .setDescription("This is beta-test API was created by Suiunbek Barsbek")

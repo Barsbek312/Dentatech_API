@@ -281,6 +281,7 @@ export class PatientService {
               surname: true,
               phone: true,
               patientStatusId: true,
+              birthDate: true,
             },
           },
         );
