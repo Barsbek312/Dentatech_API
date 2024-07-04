@@ -20,5 +20,8 @@ export class AddScheduleDto {
     receptionTypeId: number
 
     @IsNotEmpty()
-    staffId: number
+    attendingStaffId: number
+
+    @IsNotEmpty()
+    referringStaffId: number
 }

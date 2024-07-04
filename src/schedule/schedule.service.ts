@@ -20,7 +20,7 @@ export class ScheduleService {
         await this.prismaService.reception.findMany(
           {
             where: {
-              staffId: parseInt(id),
+              attendingStaffId: parseInt(id),
             },
             include: {
               patient: true,
@@ -40,7 +40,7 @@ export class ScheduleService {
         await this.prismaService.reception.findMany(
           {
             where: {
-              staff: {
+              attendingStaff: {
                 branch: {
                   clinicId: parseInt(clinicId),
                 },
@@ -56,8 +56,24 @@ export class ScheduleService {
               receptionTypeId: true,
               patientId: true,
               patient: true,
-              staffId: true,
-              staff: {
+              attendingStaffId: true,
+              attendingStaff: {
+                select: {
+                  id: true,
+                  name: true,
+                  surname: true,
+                  phone: true,
+                  isMale: true,
+                  isAdmin: true,
+                  birthDate: true,
+                  email: true,
+                  branch: true,
+                  staffPosition: true,
+                  staffStatus: true,
+                },
+              },
+              referringStaffId: true,
+              referringStaff: {
                 select: {
                   id: true,
                   name: true,
@@ -132,11 +148,14 @@ export class ScheduleService {
               patientId: dto.patientId,
               receptionTypeId:
                 dto.receptionTypeId,
-              staffId: dto.staffId,
+              attendingStaffId:
+                dto.attendingStaffId,
+              referringStaffId:
+                dto.referringStaffId,
             },
             include: {
               patient: true,
-              staff: {
+              attendingStaff: {
                 select: {
                   id: true,
                   name: true,
@@ -179,7 +198,7 @@ export class ScheduleService {
             },
             include: {
               patient: true,
-              staff: {
+              attendingStaff: {
                 select: {
                   id: true,
                   name: true,

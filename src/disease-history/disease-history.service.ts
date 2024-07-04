@@ -36,7 +36,7 @@ export class DiseaseHistoryService {
               id: true,
               end: true,
               description: true,
-              staff: {
+              attendingStaff: {
                 select: {
                   name: true,
                   surname: true,
@@ -59,9 +59,9 @@ export class DiseaseHistoryService {
               },
               medicalHistory: {
                 where: {
-                    toothPartConnect: {
-                        toothId: parseInt(toothId)
-                    }
+                  toothPartConnect: {
+                    toothId: parseInt(toothId),
+                  },
                 },
                 select: {
                   id: true,
@@ -70,6 +70,46 @@ export class DiseaseHistoryService {
                       id: true,
                       procedure: true,
                       price: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        );
+
+      return res;
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  }
+
+  async getDiseaseHistoryByReception(
+    receptionId: string,
+  ) {
+    try {
+      const res =
+        await this.prismaService.diseaseHistory.findMany(
+          {
+            where: {
+              receptionId: parseInt(receptionId),
+            },
+            select: {
+              id: true,
+              receptionId: true,
+              procedure: {
+                select: {
+                  id: true,
+                  procedure: true,
+                  price: true,
+                },
+              },
+              toothPartConnect: {
+                select: {
+                  tooth: {
+                    select: {
+                      id: true,
+                      tooth: true
                     },
                   },
                 },

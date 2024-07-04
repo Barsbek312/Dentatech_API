@@ -185,9 +185,9 @@ export class PatientService {
             where: {
               patientId: patient.id,
             },
-            distinct: ['staffId'],
+            distinct: ['attendingStaffId'],
             select: {
-              staff: {
+              attendingStaff: {
                 select: {
                   name: true,
                   surname: true,
@@ -237,7 +237,14 @@ export class PatientService {
                   surname: true,
                 },
               },
-              staff: {
+              attendingStaff: {
+                select: {
+                  id: true,
+                  name: true,
+                  surname: true,
+                },
+              },
+              referringStaff: {
                 select: {
                   id: true,
                   name: true,
@@ -271,7 +278,8 @@ export class PatientService {
             where: {
               receptions: {
                 some: {
-                  staffId: parseInt(dentistId),
+                  attendingStaffId:
+                    parseInt(dentistId),
                 },
               },
             },

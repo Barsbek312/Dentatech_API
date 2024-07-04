@@ -14,6 +14,8 @@ import { ProcedureModule } from './procedure/procedure.module';
 import { BillModule } from './bill/bill.module';
 import { DiseaseHistoryModule } from './disease-history/disease-history.module';
 import { StaffModule } from './staff/staff.module';
+import { TemplateModule } from './template/template.module';
+
 
 @Module({
   imports: [
@@ -34,7 +36,8 @@ import { StaffModule } from './staff/staff.module';
     ProcedureModule,
     BillModule,
     DiseaseHistoryModule,
-    StaffModule
+    StaffModule,
+    TemplateModule,
   ],
 })
 export class AppModule {}

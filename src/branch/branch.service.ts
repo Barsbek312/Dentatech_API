@@ -37,12 +37,12 @@ export class BranchService {
         }
     }
 
-    async getBranches(branchId: string) {
+    async getBranches(clinicId: string) {
         try {
             const branches = await this.prisma.branch.findMany({
                 where: {
                     clinic: {
-                        id: parseInt(branchId)
+                        id: parseInt(clinicId)
                     }
                 },
                 select: {
@@ -67,7 +67,8 @@ export class BranchService {
             })
 
 
-            return [...branches, {"myBranchId": branchId},  clinic];
+            // return [...branches, {"myBranchId": clinicId},  clinic];
+            return [...branches, clinic];
         } catch(error) {
             throw error;
         }

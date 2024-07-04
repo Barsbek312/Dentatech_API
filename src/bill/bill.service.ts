@@ -24,7 +24,7 @@ export class BillService {
                 select: {
                   id: true,
                   end: true,
-                  staff: {
+                  attendingStaff: {
                     select: {
                       id: true,
                       name: true,

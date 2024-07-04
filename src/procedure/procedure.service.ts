@@ -185,7 +185,7 @@ export class ProcedureService {
                       select: {
                         id: true,
                         patientId: true,
-                        staff: {
+                        attendingStaff: {
                           select: {
                             id: true,
                             name: true,

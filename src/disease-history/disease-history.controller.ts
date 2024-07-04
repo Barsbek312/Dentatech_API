@@ -24,4 +24,9 @@ export class DiseaseHistoryController {
       toothId,
     );
   }
+
+  @Get('get-disease-history-of-reception/:receptionId') 
+  getDiseaseHistoryOfReception(@Param('receptionId') receptionId: string) {
+    return this.diseaseHistoryService.getDiseaseHistoryByReception(receptionId);
+  }
 }

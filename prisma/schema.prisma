@@ -250,9 +250,10 @@ model Staff {
   staffStatusId Int
   staffStatus   StaffStatus @relation(fields: [staffStatusId], references: [id])
 
-  receptions        Reception[]
-  diagnosis         Diagnosis[]
-  plannedProcedures PlannedProcedure[]
+  receptionAsAttendingStaff Reception[]        @relation(name: "AttendingStaff")
+  receptionAsReferringStaff Reception[]        @relation(name: "ReferringStaff")
+  diagnosis                 Diagnosis[]
+  plannedProcedures         PlannedProcedure[]
 }
 
 model Template {
@@ -302,7 +303,6 @@ model TemplateCheckbox {
   templateId Int
   template   Template @relation(fields: [templateId], references: [id])
 
-  templateCheckboxOptions   TemplateCheckboxOption[]
   templateCheckboxesHistory TemplateCheckboxHistory[]
 }
 
@@ -360,10 +360,12 @@ model Reception {
   patientId Int
   patient   Patient @relation(fields: [patientId], references: [id])
 
-  staffId Int
-  staff   Staff @relation(fields: [staffId], references: [id])
+  attendingStaffId Int
+  attendingStaff   Staff @relation(name: "AttendingStaff", fields: [attendingStaffId], references: [id])
 
-  templatesHistory TemplateHistory[]
+  referringStaffId Int
+  referringStaff   Staff @relation(name: "ReferringStaff", fields: [referringStaffId], references: [id])
+
   medicalHistory   DiseaseHistory[]
 }
 
@@ -395,9 +397,6 @@ model TemplateHistory {
   toothId Int
   tooth   Tooth @relation(fields: [toothId], references: [id])
 
-  receptionId Int
-  reception   Reception @relation(fields: [receptionId], references: [id], onDelete: Cascade)
-
   templateSelectsHistory    TemplateSelectHistory[]
   templateCheckboxesHistory TemplateCheckboxHistory[]
   templateInputsHistory     TemplateInputHistory[]
@@ -427,17 +426,6 @@ model TemplateSelectOption {
   templateSelect   TemplateSelect @relation(fields: [templateSelectId], references: [id])
 
   templateSelectsHistory TemplateSelectHistory[]
-}
-
-model TemplateCheckboxOption {
-  id Int @id @default(autoincrement())
-
-  option String
-
-  templateCheckboxId Int
-  templateCheckbox   TemplateCheckbox @relation(fields: [templateCheckboxId], references: [id])
-
-  templateCheckboxOptionsHistory TemplateCheckboxOptionHistory[]
 }
 
 // 6 уровень
@@ -488,7 +476,7 @@ model DiseaseHistory {
   procedure   Procedure @relation(fields: [procedureId], references: [id])
 
   toothPartConnectId Int
-  toothPartConnect    ToothPartConnect @relation(fields: [toothPartConnectId], references: [id])
+  toothPartConnect   ToothPartConnect @relation(fields: [toothPartConnectId], references: [id])
 
   updatedAt DateTime @updatedAt
 }
@@ -519,13 +507,15 @@ model TemplateInputHistory {
 model TemplateCheckboxHistory {
   id Int @id @default(autoincrement())
 
+  value Boolean @default(false)
+
+  date DateTime @default(now()) @db.Date
+
   templateCheckboxId Int
   templateCheckbox   TemplateCheckbox @relation(fields: [templateCheckboxId], references: [id])
 
   templateHistoryId Int
   templateHistory   TemplateHistory @relation(fields: [templateHistoryId], references: [id], onDelete: Cascade)
-
-  templateCheckboxOptionsHistroy TemplateCheckboxOptionHistory[]
 }
 
 model TemplateSelectHistory {
@@ -537,18 +527,8 @@ model TemplateSelectHistory {
   templateSelectOptionId Int
   templateSelectOption   TemplateSelectOption @relation(fields: [templateSelectOptionId], references: [id])
 
+  date DateTime @default(now()) @db.Date
+
   templateHistoryId Int
   templateHistory   TemplateHistory @relation(fields: [templateHistoryId], references: [id], onDelete: Cascade)
-}
-
-// 7 уровень
-
-model TemplateCheckboxOptionHistory {
-  id Int @id @default(autoincrement())
-
-  templateCheckboxHistoryId Int
-  templateCheckboxHistory   TemplateCheckboxHistory @relation(fields: [templateCheckboxHistoryId], references: [id], onDelete: Cascade)
-
-  templateCheckboxOptionId Int
-  templateCheckboxOption   TemplateCheckboxOption @relation(fields: [templateCheckboxOptionId], references: [id])
 }

@@ -23,5 +23,8 @@ export class UpdateAdmissionDto {
     patientId?: number
 
     @IsOptional()
-    staffId?: number
+    attendingStaffId?: number
+
+    @IsOptional()
+    referringStaffId?: number
 }

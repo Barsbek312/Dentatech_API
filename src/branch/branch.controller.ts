@@ -9,9 +9,9 @@ export class BranchController {
 
     constructor(private branchService: BranchService) {}
 
-    @Get('getBranches/:branchId')
-    getBranches(@Param("branchId") branchId: string) {
-        return this.branchService.getBranches(branchId);
+    @Get('getBranches/:clinicId')
+    getBranches(@Param("clinicId") clinicId: string) {
+        return this.branchService.getBranches(clinicId);
     }
 
     @UseGuards(JwtGuard)
